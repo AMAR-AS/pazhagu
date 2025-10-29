@@ -157,7 +157,7 @@ flutter:
 
 // ===== BUILD COMMANDS =====
 /*
-# Clean & Get Dependencies
+# Clean & Get Dependencies'
 flutter clean
 flutter pub get
 

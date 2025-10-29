@@ -99,15 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.notifications_none),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const NotificationScreen()),
-                  );
-                },
-              ),
-              IconButton(
                 icon: Consumer<ThemeProvider>(
                   builder: (context, themeProvider, _) =>
                       Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
@@ -168,7 +159,23 @@ class _HomeScreenState extends State<HomeScreen> {
           drawer: const SidebarDrawer(),
           body: Column(
             children: [
-              const ModeSelector(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    const Expanded(child: ModeSelector()),
+                    IconButton(
+                      icon: const Icon(Icons.notifications_none),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const NotificationScreen()),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: _screens[visibleItems[_selectedIndex]]!,
               ),

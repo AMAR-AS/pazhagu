@@ -8,12 +8,12 @@ class UpdatesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: Text('Updates'),
+        title: const Text('Updates'),
       ),
-      body: Center(
-        child: Text('Updates Screen'),
+      body: const Center(
+        child: Text('Updates will be displayed here.'),
       ),
     );
   }

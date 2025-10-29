@@ -8,12 +8,12 @@ class MapScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: Text('Map'),
+        title: const Text('Map'),
       ),
-      body: Center(
-        child: Text('Map Screen'),
+      body: const Center(
+        child: Text('Map will be displayed here.'),
       ),
     );
   }
