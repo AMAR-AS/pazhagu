@@ -2,8 +2,8 @@
 // lib/screens/settings/navigation_settings_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:pazhagu/providers/settings_provider.dart';
+import 'package:provider/provider.dart';
 
 class NavigationSettingsScreen extends StatelessWidget {
   const NavigationSettingsScreen({Key? key}) : super(key: key);
@@ -12,21 +12,36 @@ class NavigationSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Navigation'),
+        title: const Text('Navigation Settings'),
       ),
-      body: Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, _) {
-          return SingleChildScrollView(
-            child: Column(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Consumer<SettingsProvider>(
+          builder: (context, settingsProvider, _) {
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text('Show/Hide Tabs', style: Theme.of(context).textTheme.titleLarge),
+                Text('Navigation Bar Style', style: Theme.of(context).textTheme.titleLarge),
+                DropdownButton<NavBarStyle>(
+                  value: settingsProvider.navBarStyle,
+                  onChanged: (NavBarStyle? newValue) {
+                    if (newValue != null) {
+                      settingsProvider.setNavBarStyle(newValue);
+                    }
+                  },
+                  items: NavBarStyle.values
+                      .map<DropdownMenuItem<NavBarStyle>>((NavBarStyle value) {
+                    return DropdownMenuItem<NavBarStyle>(
+                      value: value,
+                      child: Text(value.toString().split('.').last),
+                    );
+                  }).toList(),
                 ),
-                ...settingsProvider.navItemOrder.map((item) {
+                const Divider(),
+                Text('Navigation Items', style: Theme.of(context).textTheme.titleLarge),
+                ...NavItem.values.map((item) {
                   return SwitchListTile(
-                    title: Text(item.toString().split('.').last),
+                    title: Text('Show ${item.toString().split('.').last} Tab'),
                     value: settingsProvider.navItemVisibility[item]!,
                     onChanged: (value) {
                       settingsProvider.toggleNavItemVisibility(item, value);
@@ -34,10 +49,7 @@ class NavigationSettingsScreen extends StatelessWidget {
                   );
                 }).toList(),
                 const Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text('Arrange Navigation', style: Theme.of(context).textTheme.titleLarge),
-                ),
+                Text('Arrange Navigation', style: Theme.of(context).textTheme.titleLarge),
                 SizedBox(
                   height: 300, // Adjust height as needed
                   child: ReorderableListView(
@@ -54,9 +66,9 @@ class NavigationSettingsScreen extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

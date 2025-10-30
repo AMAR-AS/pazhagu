@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:pazhagu/screens/stories/channels_screen.dart';
 import 'package:pazhagu/screens/stories/community_screen.dart';
+import 'package:pazhagu/screens/stories/memories_screen.dart';
 import 'package:pazhagu/screens/stories/story_view_screen.dart';
 import 'package:pazhagu/widgets/styled_container.dart';
 
@@ -18,6 +19,8 @@ class StoriesScreen extends StatefulWidget {
 class _StoriesScreenState extends State<StoriesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isGridView = true;
+  int _internalTabIndex = 0;
 
   @override
   void initState() {
@@ -58,6 +61,70 @@ class _StoriesScreenState extends State<StoriesScreen>
   }
 
   Widget _buildStoriesTab() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildInternalTab(),
+              IconButton(
+                icon: Icon(_isGridView ? Icons.list : Icons.grid_view),
+                onPressed: () {
+                  setState(() {
+                    _isGridView = !_isGridView;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: _internalTabIndex == 0 ? _buildStoriesContent() : const MemoriesScreen(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInternalTab() {
+    return Row(
+      children: [
+        _buildInternalTabButton(0, Icons.image, 'Stories'),
+        _buildInternalTabButton(1, Icons.movie, 'Memories'),
+      ],
+    );
+  }
+
+  Widget _buildInternalTabButton(int index, IconData icon, String text) {
+    final bool isActive = _internalTabIndex == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _internalTabIndex = index;
+        });
+      },
+      child: StyledContainer(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Row(
+          children: [
+            Icon(icon, size: 18),
+            if (isActive)
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStoriesContent() {
+    return _isGridView ? _buildStoriesGrid() : _buildStoriesList();
+  }
+
+  Widget _buildStoriesGrid() {
     return GridView.count(
       crossAxisCount: 3,
       padding: const EdgeInsets.all(8),
@@ -123,6 +190,30 @@ class _StoriesScreenState extends State<StoriesScreen>
           );
         },
       ),
+    );
+  }
+
+  Widget _buildStoriesList() {
+    return ListView.builder(
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        final String username = 'User ${index + 1}';
+        return StyledContainer(
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage('https://picsum.photos/seed/${index + 1}/200/300'),
+            ),
+            title: Text(username),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const StoryViewScreen()),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

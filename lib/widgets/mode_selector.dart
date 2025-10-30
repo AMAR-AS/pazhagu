@@ -2,19 +2,43 @@
 // lib/widgets/mode_selector.dart
 
 import 'package:flutter/material.dart';
+import 'package:pazhagu/providers/settings_provider.dart';
+import 'package:pazhagu/services/search_service.dart';
 import 'package:provider/provider.dart';
 import 'package:pazhagu/providers/mode_provider.dart';
 import 'package:pazhagu/widgets/styled_container.dart';
 
 class ModeSelector extends StatefulWidget {
-  const ModeSelector({Key? key}) : super(key: key);
+  final bool isCollapsed;
+  final ValueChanged<bool> onCollapseChanged;
+
+  const ModeSelector({
+    Key? key,
+    required this.isCollapsed,
+    required this.onCollapseChanged,
+  }) : super(key: key);
 
   @override
   State<ModeSelector> createState() => _ModeSelectorState();
 }
 
-class _ModeSelectorState extends State<ModeSelector> {
-  bool _isCollapsed = false;
+class _ModeSelectorState extends State<ModeSelector> with TickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,23 +51,51 @@ class _ModeSelectorState extends State<ModeSelector> {
             child: Row(
               children: [
                 IconButton(
-                  icon: Icon(_isCollapsed ? Icons.chevron_right : Icons.chevron_left),
-                  onPressed: () {
-                    setState(() {
-                      _isCollapsed = !_isCollapsed;
-                    });
-                  },
+                  icon: Icon(widget.isCollapsed ? Icons.chevron_right : Icons.chevron_left),
+                  onPressed: () => widget.onCollapseChanged(!widget.isCollapsed),
                 ),
-                if (!_isCollapsed)
+                if (widget.isCollapsed)
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.withOpacity(0.1),
+                        isDense: true,
+                        prefixIcon: FadeTransition(
+                          opacity: _animationController,
+                          child: const Icon(Icons.search),
+                        ),
+                      ),
+                      onSubmitted: (value) {
+                        final settingsProvider = context.read<SettingsProvider>();
+                        final searchService = context.read<SearchService>();
+                        final visibleItems = settingsProvider.navItemOrder
+                            .where((item) => settingsProvider.navItemVisibility[item]!)
+                            .toList();
+                        final currentItem = visibleItems[settingsProvider.navItemOrder.indexOf(NavItem.home)];
+
+                        searchService.search(value, currentItem);
+                      },
+                    ),
+                  )
+                else
                   Expanded(
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          ...modeProvider.allModes.map((mode) => _buildModeButton(
-                            context,
-                            mode,
-                            modeProvider,
+                          ...modeProvider.allModes.map((mode) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: _buildModeButton(
+                                  context,
+                                  mode,
+                                  modeProvider,
+                                ),
                           )),
                           IconButton(
                             icon: const Icon(Icons.add),

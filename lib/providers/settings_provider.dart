@@ -5,28 +5,32 @@ import 'package:flutter/material.dart';
 
 enum LocationSharingOption { all, show_except, hide_except, contacts, none }
 enum ThemeStyle { glassmorphism, liquid, neumorphism }
-enum NavItem { home, stories, media, room, calendar, profile, map, updates }
+enum NavItem { home, moments, media, room, calendar, profile, map, updates }
+enum NavBarStyle { rectangular, circular }
+enum QuickAccessButtonType { notifications, map, calendar }
 
 class SettingsProvider extends ChangeNotifier {
   bool _isIsolatedMode = true; // Default to isolated
   bool _isTwoFactorEnabled = false; // Default to disabled
   LocationSharingOption _locationSharingOption = LocationSharingOption.contacts; // Default to contacts
   ThemeStyle _themeStyle = ThemeStyle.glassmorphism; // Default to glassmorphism
+  NavBarStyle _navBarStyle = NavBarStyle.rectangular; // Default to rectangular
+  QuickAccessButtonType _quickAccessButtonType = QuickAccessButtonType.notifications; // Default
 
   Map<NavItem, bool> _navItemVisibility = {
     NavItem.home: true,
-    NavItem.stories: true,
+    NavItem.moments: true,
     NavItem.media: true,
     NavItem.room: true,
-    NavItem.calendar: true,
+    NavItem.calendar: false,
     NavItem.profile: true,
-    NavItem.map: true,
-    NavItem.updates: false, // Disabled by default
+    NavItem.map: false,
+    NavItem.updates: false,
   };
 
   List<NavItem> _navItemOrder = [
     NavItem.home,
-    NavItem.stories,
+    NavItem.moments,
     NavItem.media,
     NavItem.room,
     NavItem.calendar,
@@ -39,6 +43,8 @@ class SettingsProvider extends ChangeNotifier {
   bool get isTwoFactorEnabled => _isTwoFactorEnabled;
   LocationSharingOption get locationSharingOption => _locationSharingOption;
   ThemeStyle get themeStyle => _themeStyle;
+  NavBarStyle get navBarStyle => _navBarStyle;
+  QuickAccessButtonType get quickAccessButtonType => _quickAccessButtonType;
   Map<NavItem, bool> get navItemVisibility => _navItemVisibility;
   List<NavItem> get navItemOrder => _navItemOrder;
 
@@ -59,6 +65,17 @@ class SettingsProvider extends ChangeNotifier {
 
   void setThemeStyle(ThemeStyle style) {
     _themeStyle = style;
+    notifyListeners();
+  }
+
+  void setNavBarStyle(NavBarStyle style) {
+    _navBarStyle = style;
+    notifyListeners();
+  }
+
+  void cycleQuickAccessButton() {
+    final nextIndex = (_quickAccessButtonType.index + 1) % QuickAccessButtonType.values.length;
+    _quickAccessButtonType = QuickAccessButtonType.values[nextIndex];
     notifyListeners();
   }
 

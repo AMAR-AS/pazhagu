@@ -4,8 +4,6 @@
 import 'package:flutter/material.dart';
 import 'package:pazhagu/providers/settings_provider.dart';
 import 'package:pazhagu/styles/glassmorphism/glass_ui.dart';
-import 'package:pazhagu/styles/liquidity/liquid_ui.dart';
-import 'package:pazhagu/styles/neumorphism/neumorphic_ui.dart';
 import 'package:provider/provider.dart';
 
 class StyledContainer extends StatelessWidget {
@@ -14,7 +12,6 @@ class StyledContainer extends StatelessWidget {
   final EdgeInsets? padding;
   final BorderRadius? borderRadius;
   final VoidCallback? onTap;
-
 
   const StyledContainer({
     Key? key,
@@ -45,8 +42,12 @@ class StyledContainer extends StatelessWidget {
                 margin: margin,
                 padding: padding ?? const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: borderRadius ?? BorderRadius.circular(16),
+                  color: Theme.of(context).colorScheme.surface.withOpacity(0.8),
+                  borderRadius: borderRadius ?? BorderRadius.circular(25),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                    width: 2,
+                  ),
                 ),
                 child: child,
               ),
@@ -62,14 +63,16 @@ class StyledContainer extends StatelessWidget {
                   borderRadius: borderRadius ?? BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      offset: const Offset(4, 4),
-                      blurRadius: 10,
+                      color: Colors.black.withOpacity(0.2),
+                      offset: const Offset(5, 5),
+                      blurRadius: 15,
+                      spreadRadius: 1,
                     ),
                     BoxShadow(
-                      color: Colors.white.withOpacity(0.7),
-                      offset: const Offset(-4, -4),
-                      blurRadius: 10,
+                      color: Colors.white.withOpacity(0.1),
+                      offset: const Offset(-5, -5),
+                      blurRadius: 15,
+                      spreadRadius: 1,
                     ),
                   ],
                 ),

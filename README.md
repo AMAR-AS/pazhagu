@@ -1,16 +1,27 @@
 # pazhagu_ask
 
-A new Flutter project.
+Next-Generation Unified Communication Platform with End-to-End Encryption.
 
-## Getting Started
+## Build Commands
 
-This project is a starting point for a Flutter application.
+# Clean & Get Dependencies
+flutter clean
+flutter pub get
 
-A few resources to get you started if this is your first Flutter project:
+# Build APK for Google Play
+flutter build appbundle --release
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Build iOS for App Store
+flutter build ios --release
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Build Web
+flutter build web --release
+
+# Build Windows EXE
+flutter build windows --release
+
+# Build macOS
+flutter build macos --release
+
+# Run in development
+flutter run --release
